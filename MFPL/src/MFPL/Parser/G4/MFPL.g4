@@ -1,11 +1,11 @@
-﻿grammar mfpl;
+grammar Mfpl;
 
 root
-	: expression;
+	: expression
 	;
 
 expression
-	: NUMBER;
+	: NUMBER
 	;
 
 value
@@ -40,6 +40,10 @@ fragment ESC
    ;
 fragment UNICODE
    : 'u' HEX HEX HEX HEX
+   ;
+
+fragment HEX
+   : [0-9a-fA-F]
    ;
 
 NUMBER

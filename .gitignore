@@ -250,3 +250,11 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
+/MFPL/src/MFPL/Parser/G4/MfplVisitor.cs
+/MFPL/src/MFPL/Parser/G4/MfplParser.cs
+/MFPL/src/MFPL/Parser/G4/MfplListener.cs
+/MFPL/src/MFPL/Parser/G4/MfplLexer.tokens
+/MFPL/src/MFPL/Parser/G4/MfplLexer.cs
+/MFPL/src/MFPL/Parser/G4/MfplBaseVisitor.cs
+/MFPL/src/MFPL/Parser/G4/MfplBaseListener.cs
+/MFPL/src/MFPL/Parser/G4/Mfpl.tokens
