@@ -19,7 +19,7 @@
         "System.Reflection.Emit": "4.0.1"
       }
     },
-    "net462": {}
+    "net461": {}
   },
   "scripts": {
     "precompile": "./Parser/G4/MFPL.bat"
