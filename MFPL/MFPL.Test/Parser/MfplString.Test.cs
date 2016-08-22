@@ -17,5 +17,12 @@ namespace MFPL.Test.Parser
 			var ch = Details.GetEscapedChar(input);
 			Assert.Equal(expected, ch.Value);
 		}
+
+		[Fact]
+		public void GetEscapedCharFailedTest()
+		{
+			var ch = Details.GetEscapedChar('F');
+			Assert.True(ch.IsFailure);
+		}
 	}
 }
