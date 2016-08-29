@@ -49,9 +49,16 @@ namespace MFPL.Parser.Utilities
 
 			public static string EscapeNoCheck(string input, char escapeChar)
 			{
-				var regex = new Regex($@"\\([\\\/bfnrt{escapeChar}])");
-				var replacedString = regex.Replace(input, "$1");
-				return replacedString;
+                return input
+                    .Replace(@"\\", @"\")
+                    .Replace(@"\/", @"/")
+                    .Replace(@"\t", "\t")
+                    .Replace(@"\b", "\b")
+                    .Replace(@"\f", "\f")
+                    .Replace(@"\n", "\n")
+                    .Replace(@"\r", "\r")
+                    .Replace(@"\t", "\t")
+                    .Replace($@"\{escapeChar}", escapeChar.ToString());
 			}
 		}
     }

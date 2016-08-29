@@ -24,5 +24,35 @@ namespace MFPL.Test.Parser
 			var ch = Details.GetEscapedChar('F');
 			Assert.True(ch.IsFailure);
 		}
-	}
+
+        [Fact]
+        public void NoEscapeTest()
+        {
+            var expected = "Hello World";
+            var input = $"\"{expected}\"";
+            var result = Escape(input);
+            Assert.True(result.IsSuccess);
+            Assert.Equal(expected, result.Value);
+        }
+
+        [Fact]
+        public void EscapeChineseTest()
+        {
+            var expected = "Hello 中文";
+            var input = $"'{expected}'";
+            var result = Escape(input);
+            Assert.True(result.IsSuccess);
+            Assert.Equal(expected, result.Value);
+        }
+
+        [Theory]
+        [InlineData(@"'\t'", "\t")]
+        [InlineData(@"'\\'", @"\")]
+        public void EscapeTest(string input, string expected)
+        {
+            var result = Escape(input);
+            Assert.True(result.IsSuccess);
+            Assert.Equal(expected, result.Value);
+        }
+    }
 }
