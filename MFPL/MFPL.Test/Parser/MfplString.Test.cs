@@ -54,5 +54,14 @@ namespace MFPL.Test.Parser
             Assert.True(result.IsSuccess);
             Assert.Equal(expected, result.Value);
         }
+
+        [Theory]
+        [InlineData(@"'Hello \u6211\u662F'", "Hello 我是")]
+        [InlineData(@"'Hello \uD852\uDF62'", "Hello 𤭢")]
+        public void UnicodeTest(string unicode, string expected)
+        {
+            var actual = Escape(unicode);
+            Assert.Equal(expected, actual.Value);
+        }
     }
 }
