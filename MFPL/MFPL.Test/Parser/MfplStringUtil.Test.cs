@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
-using static MFPL.Parser.Utilities.MfplString;
+using static MFPL.Parser.Utilities.MfplStringUtil;
 
 namespace MFPL.Test.Parser
 {
-    public class MfplStringTest
+    public class MfplStringUtilTest
     {
 		[Theory]
 		[InlineData('\'', '"')]
@@ -30,7 +30,7 @@ namespace MFPL.Test.Parser
         {
             var expected = "Hello World";
             var input = $"\"{expected}\"";
-            var result = Escape(input);
+            var result = Parse(input);
             Assert.True(result.IsSuccess);
             Assert.Equal(expected, result.Value);
         }
@@ -40,7 +40,7 @@ namespace MFPL.Test.Parser
         {
             var expected = "Hello 中文";
             var input = $"'{expected}'";
-            var result = Escape(input);
+            var result = Parse(input);
             Assert.True(result.IsSuccess);
             Assert.Equal(expected, result.Value);
         }
@@ -50,7 +50,7 @@ namespace MFPL.Test.Parser
         [InlineData(@"'\\'", @"\")]
         public void EscapeTest(string input, string expected)
         {
-            var result = Escape(input);
+            var result = Parse(input);
             Assert.True(result.IsSuccess);
             Assert.Equal(expected, result.Value);
         }
@@ -60,7 +60,7 @@ namespace MFPL.Test.Parser
         [InlineData(@"'Hello \uD852\uDF62'", "Hello 𤭢")]
         public void UnicodeTest(string unicode, string expected)
         {
-            var actual = Escape(unicode);
+            var actual = Parse(unicode);
             Assert.Equal(expected, actual.Value);
         }
     }

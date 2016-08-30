@@ -8,25 +8,25 @@ using System.Threading.Tasks;
 
 namespace MFPL.Parser.Utilities
 {
-    public static class MfplString
+    public static class MfplStringUtil
     {
-        public static Result<string> Escape(string text)
+        public static Result<string> Parse(string input)
         {
-            if (string.IsNullOrWhiteSpace(text))
+            if (string.IsNullOrWhiteSpace(input))
                 return Result.Fail<string>($"string literial must not be empty.");
 
-            if (text.Length <= 2)
+            if (input.Length <= 2)
                 return Result.Fail<string>($"string literial length must > 2.");
 
-            if (text.First() != text.Last())
+            if (input.First() != input.Last())
                 return Result.Fail<string>($"string literial's first and last char must be the same.");
 
-            var firstChar = text[0];
+            var firstChar = input[0];
             var escapedChar = Details.GetEscapedChar(firstChar);
             if (escapedChar.IsFailure)
                 return Result.Fail<string>(escapedChar.Error);
 
-            var inner = text.Substring(1, text.Length - 2);
+            var inner = input.Substring(1, input.Length - 2);
             return Result.Ok(Details.EscapeNoCheck(inner, escapedChar.Value));
         }
 
