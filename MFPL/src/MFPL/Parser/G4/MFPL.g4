@@ -5,13 +5,21 @@ root
 	;
 
 statement
-	: '{' statement* '}'
-	| 'var' SYNTAX '=' expression ';'
+	: block
+	| var ';'
 	| expression ';'
 	//| 'if' '(' expression ')' statement ('else' statement)?
 	//| 'for' '(' statement ';' expression ';' expression ')' statement
 	//| 'function' SYNTAX '(' SYNTAX? (',' SYNTAX)* ')' '{' statement '}'
 	| ';'
+	;
+
+block
+	: '{' statement* '}'
+	;
+
+var
+	: 'var' SYNTAX '=' expression
 	;
 
 expression
