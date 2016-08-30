@@ -54,6 +54,18 @@ namespace MFPL.Test.Lexer
             Assert.Equal(1, tokens.Count);
         }
 
+        [Fact]
+        public void EmptyTokenTest()
+        {
+            var input = " \r \t \n ";
+
+            var lexer = MfplCompiler.Helper.BuildMfplLexer(input);
+
+            var tokens = lexer.GetAllTokens();
+
+            Assert.Equal(0, tokens.Count);
+        }
+
         private class ErrorListener : IAntlrErrorListener<int>
         {
             public void SyntaxError(IRecognizer recognizer, int offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
