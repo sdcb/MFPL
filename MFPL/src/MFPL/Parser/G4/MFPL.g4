@@ -1,65 +1,84 @@
 grammar Mfpl;
 
 root
-	: expression
+	: statement*
+	;
+
+statement
+	: '{' statement* '}'
+	| 'var' SYNTAX '=' expression ';'
+	| expression ';'
+	//| 'if' '(' expression ')' statement ('else' statement)?
+	//| 'for' '(' statement ';' expression ';' expression ')' statement
+	//| 'function' SYNTAX '(' SYNTAX? (',' SYNTAX)* ')' '{' statement '}'
+	| ';'
 	;
 
 expression
-	: NUMBER
+	: value
+	| SYNTAX '(' expression? (',' expression)* ')'
+	| expression ('*' | '/') expression
+	| expression ('+' | '-') expression
+	//| expression '&&' expression
+	//| expression '||' expression
 	;
 
 value
-   : STRING
-   | NUMBER
-   | object
-   | array
-   | 'true'
-   | 'false'
-   | 'null'
-   ;
+    : STRING
+    | NUMBER
+    | object
+    | array
+    | 'true'
+    | 'false'
+    | 'null'
+    ;
 
 object
-   : '{' pair (',' pair)* '}'
-   | '{' '}'
-   ;
+    : '{' pair (',' pair)* '}'
+    | '{' '}'
+    ;
 
 pair
-   : STRING ':' value
-   ;
+    : STRING ':' value
+    ;
 
 array
-   : '[' value (',' value)* ']'
-   | '[' ']'
-   ;
+    : '[' value (',' value)* ']'
+    | '[' ']'
+    ;
+
+SYNTAX
+	: [a-zA-Z_] [0-9a-zA-Z_]*
+	;
 
 STRING
-   : '"' (('\\' (["\\/bfnrt] | UNICODE)) | ~ ["\\])* '"'
-   | '\'' (('\\' (['\\/bfnrt] | UNICODE)) | ~ ['\\])* '\''
-   ;
+    : '"' (('\\' (["\\/bfnrt] | UNICODE)) | ~ ["\\])* '"'
+    | '\'' (('\\' (['\\/bfnrt] | UNICODE)) | ~ ['\\])* '\''
+    ;
 
 fragment UNICODE
-   : 'u' HEX HEX HEX HEX
-   ;
+    : 'u' HEX HEX HEX HEX
+    ;
 
 fragment HEX
-   : [0-9a-fA-F]
-   ;
+    : [0-9a-fA-F]
+    ;
 
 NUMBER
-   : '-'? INT '.' [0-9] + EXP? | '-'? INT EXP | '-'? INT
-   ;
+    : '-'? INT '.' [0-9] + EXP? | '-'? INT EXP | '-'? INT
+    ;
 
 fragment INT
-   : '0' | [1-9] [0-9]*
-   ;
+    : '0' | [1-9] [0-9]*
+    ;
 
 fragment EXP
-   : [Ee] [+\-]? INT
-   ;
+    : [Ee] [+\-]? INT
+    ;
 
 WS
-   : [ \t\n\r] +    -> skip
-   ;
+    : [ \t\n\r] +     -> skip
+    ;
 
 BlockComment
 	: '/*' .*? '*/' -> skip

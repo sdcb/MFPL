@@ -22,6 +22,6 @@
     "net461": {}
   },
   "scripts": {
-    "precompile": "./Parser/G4/MFPL.bat"
+    "postrestore": "./Parser/G4/MFPL.bat"
   }
 }
