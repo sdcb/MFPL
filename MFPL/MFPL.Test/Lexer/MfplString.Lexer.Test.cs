@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace MFPL.Test.Parser
+namespace MFPL.Test.Lexer
 {
     public class MfplStringLexerTest
     {
