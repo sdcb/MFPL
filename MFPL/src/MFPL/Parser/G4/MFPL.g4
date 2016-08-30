@@ -33,11 +33,10 @@ array
    ;
 
 STRING
-   : '"' (ESC | ~ ["\\])* '"'
+   : '"' (('\\' (["\\/bfnrt] | UNICODE)) | ~ ["\\])* '"'
+   | '\'' (('\\' (['\\/bfnrt] | UNICODE)) | ~ ['\\])* '\''
    ;
-fragment ESC
-   : '\\' (["\\/bfnrt] | UNICODE)
-   ;
+
 fragment UNICODE
    : 'u' HEX HEX HEX HEX
    ;
