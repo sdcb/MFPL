@@ -14,8 +14,7 @@ namespace MFPL.Compiler
         {
             public static MfplParser BuildMfplParser(string sourceCode)
             {
-                var inputStream = new AntlrInputStream(sourceCode);
-                var lexer = new MfplLexer(inputStream);
+                var lexer = BuildMfplLexer(sourceCode);
                 var tokenStream = new CommonTokenStream(lexer);
                 var parser = new MfplParser(tokenStream);
                 return parser;
