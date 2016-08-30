@@ -48,6 +48,8 @@ namespace MFPL.Test.Parser
         [Theory]
         [InlineData(@"'\t'", "\t")]
         [InlineData(@"'\\'", @"\")]
+        [InlineData(@"'\n'", "\n")]
+        [InlineData(@"'\r'", "\r")]
         public void EscapeTest(string input, string expected)
         {
             var result = Parse(input);

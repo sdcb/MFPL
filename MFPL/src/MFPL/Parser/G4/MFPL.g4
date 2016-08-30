@@ -19,8 +19,8 @@ expression
 	| SYNTAX '(' expression? (',' expression)* ')'
 	| expression ('*' | '/') expression
 	| expression ('+' | '-') expression
-	//| expression '&&' expression
-	//| expression '||' expression
+	| expression '&&' expression
+	| expression '||' expression
 	;
 
 value
@@ -28,8 +28,7 @@ value
     | NUMBER
     | object
     | array
-    | 'true'
-    | 'false'
+    | BOOL
     | 'null'
     ;
 
@@ -46,6 +45,11 @@ array
     : '[' value (',' value)* ']'
     | '[' ']'
     ;
+
+BOOL
+	: 'true' 
+	| 'false'
+	;
 
 SYNTAX
 	: [a-zA-Z_] [0-9a-zA-Z_]*

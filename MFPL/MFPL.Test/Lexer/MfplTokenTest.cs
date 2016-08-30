@@ -25,6 +25,21 @@ namespace MFPL.Test.Lexer
         }
 
         [Fact]
+        public void CanRecognazeBool()
+        {
+            var input = "'3' true -3e-8 false";
+            var lexer = MfplCompiler.Helper.BuildMfplLexer(input);
+
+            var tokens = lexer.GetAllTokens();
+            Assert.Equal(4, tokens.Count);
+
+            Assert.Equal(MfplLexer.STRING, tokens[0].Type);
+            Assert.Equal(MfplLexer.BOOL, tokens[1].Type);
+            Assert.Equal(MfplLexer.NUMBER, tokens[2].Type);
+            Assert.Equal(MfplLexer.BOOL, tokens[3].Type);
+        }
+
+        [Fact]
         public void CannotParseUnknownToken()
         {
             var input = "3 \"3";
