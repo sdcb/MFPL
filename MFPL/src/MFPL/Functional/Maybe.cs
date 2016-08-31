@@ -88,7 +88,7 @@ namespace MFPL.Functional
 
             return Value.ToString();
         }
-        
+
         public T Unwrap()
         {
             if (HasValue)
@@ -96,7 +96,7 @@ namespace MFPL.Functional
 
             return default(T);
         }
-        
+
         public K Unwrap<K>(Func<T, K> selector)
         {
             if (HasValue)
