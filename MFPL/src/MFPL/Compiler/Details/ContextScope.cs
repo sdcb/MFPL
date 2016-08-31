@@ -64,7 +64,7 @@ namespace MFPL.Compiler.Details
         }
     }
 
-    public class ContextScope
+    public static class ContextScope
     {
         public static ContextScope<T> CreateEmpty<T>() where T : class
         {

@@ -23,36 +23,36 @@ var
 	;
 
 expression
-	: value
-	| SYNTAX '(' expression? (',' expression)* ')'
-	| expression ('*' | '/') expression
-	| expression ('+' | '-') expression
-	| expression '&&' expression
-	| expression '||' expression
+	: value                                        #ValueExpression
+	| SYNTAX '(' expression? (',' expression)* ')' #FunctionCallExpression
+	| expression ('*' | '/') expression #BinaryExpression
+	| expression ('+' | '-') expression #BinaryExpression
+	| expression '&&' expression        #BinaryExpression
+	| expression '||' expression        #BinaryExpression
 	;
 
 value
     : STRING
     | NUMBER
-    | object
-    | array
+    //| object
+    //| array
     | BOOL
-    | 'null'
+    //| 'null'
     ;
 
-object
-    : '{' pair (',' pair)* '}'
-    | '{' '}'
-    ;
+//object
+//    : '{' pair (',' pair)* '}'
+//    | '{' '}'
+//    ;
 
-pair
-    : STRING ':' value
-    ;
+//pair
+//    : STRING ':' value
+//    ;
 
-array
-    : '[' value (',' value)* ']'
-    | '[' ']'
-    ;
+//array
+//    : '[' value (',' value)* ']'
+//    | '[' ']'
+//    ;
 
 BOOL
 	: 'true' 
