@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MFPL.Parser
+namespace MFPL.Parser.Utilities
 {
     public static class MfplNumberUtil
     {
