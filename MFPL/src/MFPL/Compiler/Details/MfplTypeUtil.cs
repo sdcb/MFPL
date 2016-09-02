@@ -12,7 +12,7 @@ namespace MFPL.Compiler.Details
         {
             if (type1 != type2)
             {
-                return Result.Fail<MfplTypes>("Binary expression type must be the same.");
+                return Result.Fail<MfplTypes>("Binary operator must be same type.");
             }
 
             if (op == "+")
@@ -22,21 +22,21 @@ namespace MFPL.Compiler.Details
                 else if (type1 == MfplTypes.Number)
                     return Result.Ok(type1);
                 else
-                    return Result.Fail<MfplTypes>("Operator + expression must be string or number type.");
+                    return Result.Fail<MfplTypes>("Binary operator + must be string or number type.");
             }
             else if (op == "-" || op == "*" || op == "/")
             {
                 if (type1 == MfplTypes.Number)
                     return Result.Ok(type1);
                 else
-                    return Result.Fail<MfplTypes>("Operator - * / expression must be number type.");
+                    return Result.Fail<MfplTypes>("Binary operator -*/ must be number type.");
             }
             else if (op == ">" || op == "<" || op == ">=" || op == "<=")
             {
                 if (type1 == MfplTypes.Number)
                     return Result.Ok(MfplTypes.Bool);
                 else
-                    return Result.Fail<MfplTypes>("Operator > < >= <= expression must be number type.");
+                    return Result.Fail<MfplTypes>("Binary operator > < >= <= must be number type.");
             }
             else if (op == "==" || op == "!=")
             {
@@ -47,7 +47,7 @@ namespace MFPL.Compiler.Details
                 if (type1 == MfplTypes.Bool)
                     return Result.Ok(type1);
                 else
-                    return Result.Fail<MfplTypes>("Operator &&, || expression must be bool type.");
+                    return Result.Fail<MfplTypes>("Binary operator && || must be bool type.");
             }
             else
             {
