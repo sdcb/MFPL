@@ -24,11 +24,14 @@ var
 
 expression
 	: value                                        #ValueExpression
+	| '-' expression                               #SingleOperatorExpression
+	| '!' expression                               #SingleOperatorExpression
 	| SYNTAX '(' expression? (',' expression)* ')' #FunctionCallExpression
 	| expression ('*' | '/') expression #BinaryExpression
 	| expression ('+' | '-') expression #BinaryExpression
 	| expression '&&' expression        #BinaryExpression
 	| expression '||' expression        #BinaryExpression
+	| expression '==' expression        #BinaryExpression
 	;
 
 value
