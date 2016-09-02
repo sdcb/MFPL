@@ -31,7 +31,14 @@ namespace MFPL.Compiler.Details
                 else
                     return Result.Fail<MfplTypes>("Operator - * / expression must be number type.");
             }
-            else if (op == "==")
+            else if (op == ">" || op == "<" || op == ">=" || op == "<=")
+            {
+                if (type1 == MfplTypes.Number)
+                    return Result.Ok(MfplTypes.Bool);
+                else
+                    return Result.Fail<MfplTypes>("Operator > < >= <= expression must be number type.");
+            }
+            else if (op == "==" || op == "!=")
             {
                 return Result.Ok(MfplTypes.Bool);
             }
@@ -44,7 +51,37 @@ namespace MFPL.Compiler.Details
             }
             else
             {
-                return Result.Fail<MfplTypes>($"Unknown operator '{op}'.");
+                return Result.Fail<MfplTypes>($"Unknown binary operator '{op}'.");
+            }
+        }
+
+        public static Result<MfplTypes> UnaryOperator(string op, MfplTypes type)
+        {
+            if (op == "!")
+            {
+                if (type == MfplTypes.Bool)
+                {
+                    return Result.Ok(MfplTypes.Bool);
+                }
+                else
+                {
+                    return Result.Fail<MfplTypes>("Unary operator ! must be bool type.");
+                }
+            }
+            else if (op == "-" || op == "+")
+            {
+                if (type == MfplTypes.Number)
+                {
+                    return Result.Ok(MfplTypes.Number);
+                }
+                else
+                {
+                    return Result.Fail<MfplTypes>("Unary operator + - must be number type.");
+                }
+            }
+            else
+            {
+                return Result.Fail<MfplTypes>($"Unknown unary operator '{op}'.");
             }
         }
     }
