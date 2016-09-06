@@ -19,7 +19,7 @@
         "System.Reflection.Emit": "4.0.1"
       }
     },
-    "net461": {}
+    //"net461": {}
   },
   "scripts": {
     "postrestore": "./Parser/G4/MFPL.bat"

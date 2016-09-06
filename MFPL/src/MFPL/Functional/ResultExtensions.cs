@@ -23,6 +23,14 @@ namespace MFPL.Functional
             return Result.Ok(func(result.Value));
         }
 
+        public static Result<K> OnSuccess<T, K>(this Result<T> result, Func<T, Result<K>> func)
+        {
+            if (result.IsFailure)
+                return Result.Fail<K>(result.Error);
+
+            return func(result.Value);
+        }
+
         public static Result<T> Ensure<T>(this Result<T> result, Func<T, bool> predicate, string errorMessage)
         {
             if (result.IsFailure)

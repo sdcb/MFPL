@@ -24,8 +24,8 @@ var
 
 expression
 	: value                                           #ValueExpression
-	| '-' expression                                  #SingleOperatorExpression
-	| '!' expression                                  #SingleOperatorExpression
+	| '-' expression                                  #UnaryExpression
+	| '!' expression                                  #UnaryExpression
 	| SYNTAX '(' expression? (',' expression)* ')'    #FunctionCallExpression
 	| expression ('*' | '/') expression               #BinaryExpression
 	| expression ('+' | '-') expression               #BinaryExpression
