@@ -98,9 +98,8 @@ namespace MFPL.Compiler.Details
                         }
                         else if (type == MfplTypes.String)
                         {
-                            il.Emit(OpCodes.Call, 
-                                typeof(string).GetMethod(nameof(string.Concat), 
-                                new[] { typeof(string), typeof(string) }));
+                            il.Emit(OpCodes.Call, typeof(string).GetMethod(
+                                nameof(string.Concat), new[] { typeof(string), typeof(string) }));
                         }
                         break;
                     case "-":
