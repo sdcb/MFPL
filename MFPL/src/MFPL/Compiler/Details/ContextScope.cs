@@ -38,7 +38,7 @@ namespace MFPL.Compiler.Details
         {
             if (Contains(syntax))
             {
-                return Result.Fail<T>($"Syntax'{syntax}' already declared.");
+                return Result.Fail<T>($"Syntax '{syntax}' already declared.");
             }
             else
             {
