@@ -20,7 +20,7 @@ namespace MFPL.Parser.Utilities
             }
             else
             {
-                return Result.Fail<double>("number literial format error.");
+                return Result.Fail<double>($"Literial '{input}' is not valid number format.");
             }
         }
     }
