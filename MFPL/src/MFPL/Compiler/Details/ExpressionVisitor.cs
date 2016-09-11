@@ -66,7 +66,8 @@ namespace MFPL.Compiler.Details
                         il.Emit(OpCodes.Neg);
                         break;
                     case "!":
-                        il.Emit(OpCodes.Not);
+                        il.Emit(OpCodes.Ldc_I4_0);
+                        il.Emit(OpCodes.Ceq);
                         break;
                     default:
                         return Result.Fail<MfplTypes>($"Unknown unary operator: '{op}'.");
@@ -113,11 +114,13 @@ namespace MFPL.Compiler.Details
                         break;
                     case ">=":
                         il.Emit(OpCodes.Clt);
-                        il.Emit(OpCodes.Not);
+                        il.Emit(OpCodes.Ldc_I4_0);
+                        il.Emit(OpCodes.Ceq);
                         break;
                     case "<=":
                         il.Emit(OpCodes.Cgt);
-                        il.Emit(OpCodes.Not);
+                        il.Emit(OpCodes.Ldc_I4_0);
+                        il.Emit(OpCodes.Ceq);
                         break;
                     case "&&":
                         il.Emit(OpCodes.And);
@@ -130,7 +133,8 @@ namespace MFPL.Compiler.Details
                         break;
                     case "!=":
                         il.Emit(OpCodes.Ceq);
-                        il.Emit(OpCodes.Not);
+                        il.Emit(OpCodes.Ldc_I4_0);
+                        il.Emit(OpCodes.Ceq);
                         break;
                     default:
                         return Result.Fail<MfplTypes>($"Unknown binary operator '{op}'.");
