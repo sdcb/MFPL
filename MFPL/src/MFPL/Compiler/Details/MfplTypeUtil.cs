@@ -45,7 +45,7 @@ namespace MFPL.Compiler.Details
                 if (type1 == MfplTypes.Number)
                     return Result.Ok(type1);
                 else
-                    return Result.Fail<MfplTypes>("Binary operator -*/ must be number type.");
+                    return Result.Fail<MfplTypes>("Binary operator - * / must be number type.");
             }
             else if (op == ">" || op == "<" || op == ">=" || op == "<=")
             {
