@@ -24,14 +24,17 @@ namespace MFPL.Compiler.Details
         public override Result VisitExpressionStatement([NotNull] ExpressionStatementContext context)
         {
             var expression = context.GetChild<ExpressionContext>(0);
-            if (expression is FunctionCallExpressionContext)
-            {
-                return Result.Ok();
-            }
-            else
-            {
-                return Result.Fail("Statement expression can only be function call.");
-            }
+
+            return Result.Ok(expression)
+                .Ensure(v => v is FunctionCallExpressionContext, "Statement expression can only be function call.")
+                .OnSuccess(v => VisitExpression(v))
+                .ExecWhen(t => t != MfplTypes.Void, t => il.Emit(OpCodes.Pop));
+        }
+
+        public new Result<MfplTypes> VisitExpression([NotNull] ExpressionContext context)
+        {
+            return new ExpressionVisitor(il, scope)
+                .Visit(context);
         }
     }
 }

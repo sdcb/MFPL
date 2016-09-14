@@ -60,6 +60,16 @@ namespace MFPL.Functional
             return result;
         }
 
+        public static Result<T> ExecWhen<T>(this Result<T> result, Func<T, bool> predicate, Action<T> action)
+        {
+            if (result.IsSuccess && predicate(result.Value))
+            {
+                action(result.Value);
+            }
+
+            return result;
+        }
+
         public static T OnBoth<T>(this Result result, Func<Result, T> func)
         {
             return func(result);
