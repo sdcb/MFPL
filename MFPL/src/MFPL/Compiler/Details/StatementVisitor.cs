@@ -13,10 +13,28 @@ namespace MFPL.Compiler.Details
     public class StatementVisitor : MfplBaseVisitor<Result>
     {
         private readonly ILGenerator il;
+        private readonly ContextScope<LocalBuilder> scope;
 
-        public StatementVisitor(ILGenerator il)
+        public StatementVisitor(ILGenerator il, ContextScope<LocalBuilder> scope)
         {
             this.il = il;
+            this.scope = scope;
+        }
+
+        public override Result VisitExpressionStatement([NotNull] ExpressionStatementContext context)
+        {
+            var expression = context.GetChild<ExpressionContext>(0);
+
+            return Result.Ok(expression)
+                .Ensure(v => v is FunctionCallExpressionContext, "Statement expression can only be function call.")
+                .OnSuccess(v => VisitExpression(v))
+                .ExecWhen(t => t != MfplTypes.Void, t => il.Emit(OpCodes.Pop));
+        }
+
+        public new Result<MfplTypes> VisitExpression([NotNull] ExpressionContext context)
+        {
+            return new ExpressionVisitor(il, scope)
+                .Visit(context);
         }
     }
 }

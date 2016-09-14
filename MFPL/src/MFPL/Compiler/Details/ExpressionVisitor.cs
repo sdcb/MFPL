@@ -11,6 +11,7 @@ using static MFPL.Parser.G4.MfplParser;
 using MFPL.Parser.Utilities;
 using MFPL.Parser;
 using System.Reflection;
+using MFPL.Compiler.MfplLibs;
 
 namespace MFPL.Compiler.Details
 {
@@ -58,7 +59,7 @@ namespace MFPL.Compiler.Details
             var exp1 = Visit(context.GetChild<ExpressionContext>(0));
             var op = context.GetChild(0).GetText();
 
-            return MfplTypeUtil.UnaryOperator(op, exp1).OnSuccess(type => 
+            return MfplTypeUtil.UnaryOperator(op, exp1).OnSuccess(type =>
             {
                 switch (op)
                 {
@@ -82,7 +83,7 @@ namespace MFPL.Compiler.Details
             var exp2 = Visit(context.GetChild<ExpressionContext>(1));
             var op = context.GetChild(1).GetText();
 
-            return MfplTypeUtil.BinaryOperator(exp1, exp2, op).OnSuccess(type => 
+            return MfplTypeUtil.BinaryOperator(exp1, exp2, op).OnSuccess(type =>
             {
                 switch (op)
                 {
@@ -141,6 +142,26 @@ namespace MFPL.Compiler.Details
                 }
                 return Result.Ok(type);
             });
+        }
+
+        public override Result<MfplTypes> VisitFunctionCallExpression([NotNull] FunctionCallExpressionContext context)
+        {
+            var syntax = context.GetChild(0).GetText();
+            var expressions = context.children.OfType<ExpressionContext>();
+
+            var expTypes = expressions.Select(x => Visit(x)).ToList();
+            foreach (var type in expTypes)
+            {
+                if (type.IsFailure) return type;
+            }
+
+            var types = expTypes.Select(x => x.Value).ToArray();
+
+            var function = KnownFunction.GetFunction(syntax, types);
+            if (function.IsFailure) return Result.Fail<MfplTypes>(function.Error);
+
+            function.Value.Emiter(il);
+            return Result.Ok(function.Value.ReturnType);
         }
     }
 }

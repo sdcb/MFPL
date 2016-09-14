@@ -5,21 +5,13 @@ root
 	;
 
 statement
-	: block
-	| var ';'
-	| expression ';'
+	: '{' statement* '}'              #BlockStatement
+	| 'var' SYNTAX '=' expression ';' #VarStatement
+	| SYNTAX '=' expression ';'       #AssignStatement
+	| expression ';'                  #ExpressionStatement
 	//| 'if' '(' expression ')' statement ('else' statement)?
 	//| 'for' '(' statement ';' expression ';' expression ')' statement
 	//| 'function' SYNTAX '(' SYNTAX? (',' SYNTAX)* ')' '{' statement '}'
-	| ';'
-	;
-
-block
-	: '{' statement* '}'
-	;
-
-var
-	: 'var' SYNTAX '=' expression
 	;
 
 expression
@@ -33,6 +25,8 @@ expression
 	| expression ('&&' | '||') expression             #BinaryExpression
 	| expression ('==' | '!=') expression             #BinaryExpression
 	;
+
+
 
 value
     : STRING

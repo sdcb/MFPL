@@ -42,7 +42,7 @@ namespace MFPL.Functional
             return new Result<T>(value, true, string.Empty);
         }
 
-        public static Result Combine(params Result[] results)
+        public static Result Combine(IEnumerable<Result> results)
         {
             foreach (Result result in results)
             {

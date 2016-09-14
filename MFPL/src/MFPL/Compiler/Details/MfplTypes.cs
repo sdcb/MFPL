@@ -7,6 +7,7 @@ namespace MFPL.Compiler.Details
 {
     public enum MfplTypes
     {
+        Void, 
         String, 
         Number, 
         Bool
