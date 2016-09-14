@@ -26,7 +26,7 @@ namespace MFPL.Test.CompilerDetails
         [Fact]
         public void FunctionCallCanBeStatement()
         {
-            var sourceCode = "fuck();";
+            var sourceCode = "printHelloWorld();";
             var parser = MfplCompiler.Helper.BuildMfplParser(sourceCode);
             var visitor = new StatementVisitor(GetILBuilder(), ContextScope.CreateEmpty<LocalBuilder>());
             var result = visitor.Visit(parser.root());
