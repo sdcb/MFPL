@@ -1,4 +1,4 @@
-﻿using MFPL.Compiler.Details;
+﻿using MFPL.Compiler;
 using MFPL.Compiler.MfplLibs;
 using System;
 using System.Collections.Generic;
