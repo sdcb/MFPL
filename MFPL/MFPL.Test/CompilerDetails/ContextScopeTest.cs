@@ -13,7 +13,7 @@ namespace MFPL.Test.CompilerDetails
         public void SetGetOk()
         {
             var scope = ContextScope.CreateEmpty<string>();
-            var kv = new { Key = "key", Value = "Value" };
+            var kv = new { Key = "key", Value = "value" };
 
             var setResult = scope.Declare(kv.Key, kv.Value);
             Assert.True(setResult.IsSuccess);
