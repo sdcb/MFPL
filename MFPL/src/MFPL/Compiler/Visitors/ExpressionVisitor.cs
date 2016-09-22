@@ -12,8 +12,9 @@ using MFPL.Parser.Utilities;
 using MFPL.Parser;
 using System.Reflection;
 using MFPL.Compiler.MfplLibs;
+using MFPL.Compiler.Core;
 
-namespace MFPL.Compiler.Details
+namespace MFPL.Compiler.Visitors
 {
     public class ExpressionVisitor : MfplBaseVisitor<Result<MfplTypes>>
     {

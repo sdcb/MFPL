@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 using Antlr4.Runtime.Misc;
 using static MFPL.Parser.G4.MfplParser;
 using System.Reflection.Emit;
+using MFPL.Compiler.Core;
 
-namespace MFPL.Compiler.Details
+namespace MFPL.Compiler.Visitors
 {
     public class StatementVisitor : MfplBaseVisitor<Result>
     {

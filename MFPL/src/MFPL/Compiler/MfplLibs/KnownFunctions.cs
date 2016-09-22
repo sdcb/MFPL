@@ -1,4 +1,4 @@
-﻿using MFPL.Compiler.Details;
+﻿using MFPL.Compiler.Core;
 using MFPL.Compiler.MfplLibs.Implements;
 using MFPL.Functional;
 using System;

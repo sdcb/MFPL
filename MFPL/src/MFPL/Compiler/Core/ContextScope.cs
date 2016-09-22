@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Threading.Tasks;
 
-namespace MFPL.Compiler.Details
+namespace MFPL.Compiler.Core
 {
     public class ContextScope<T>
     {
