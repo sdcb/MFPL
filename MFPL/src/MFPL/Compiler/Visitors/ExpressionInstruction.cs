@@ -36,15 +36,6 @@ namespace MFPL.Compiler.Visitors
             return new ExpressionInstruction(instructions, ResultType);
         }
 
-        private ExpressionInstruction CopyAddInstructionChangeType(
-            IList<Instruction> instruction,
-            MfplTypes resultType)
-        {
-            var instructions = new List<Instruction>(Instructions);
-            instructions.AddRange(instruction);
-            return new ExpressionInstruction(instructions, resultType);
-        }
-
         public Result<ExpressionInstruction> ByUnaryOperation(string op)
         {
             var me = this;
@@ -69,7 +60,7 @@ namespace MFPL.Compiler.Visitors
         {
             var me = this;
             return MfplTypeUtil.BinaryOperator(ResultType, other.ResultType, op)
-                .OnSuccess(type => me.CopyAddInstructionChangeType(other.Instructions, type))
+                .OnSuccess(type => CombineWithType(new[] { me, other }, type))
                 .OnSuccess(v =>
                 {
                     switch (op)
@@ -161,6 +152,11 @@ namespace MFPL.Compiler.Visitors
                 resultType);
         }
 
+        public static ExpressionInstruction Create(IList<Instruction> instruction, MfplTypes resultType)
+        {
+            return new ExpressionInstruction(instruction, resultType);
+        }
+
         public static ExpressionInstruction FromValue(string value)
         {
             return new ExpressionInstruction(
@@ -178,8 +174,32 @@ namespace MFPL.Compiler.Visitors
         public static ExpressionInstruction FromValue(bool value)
         {
             return new ExpressionInstruction(
-                new List<Instruction> { Instruction.Create(value ? OpCodes.Ldc_I4_1: OpCodes.Ldc_I4_0) },
+                new List<Instruction> { Instruction.Create(value ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0) },
                 MfplTypes.Bool);
+        }
+
+        public static ExpressionInstruction CombineWithType(
+            MfplTypes finalType, 
+            params ExpressionInstruction[] eis)
+        {
+            var instructions = new List<Instruction>();
+            foreach (var ei in eis)
+            {
+                instructions.AddRange(ei.Instructions);
+            }
+            return new ExpressionInstruction(instructions, finalType);
+        }
+
+        public static ExpressionInstruction CombineWithType(
+            MfplTypes finalType, 
+            IEnumerable<ExpressionInstruction> eis)
+        {
+            var instructions = new List<Instruction>();
+            foreach (var ei in eis)
+            {
+                instructions.AddRange(ei.Instructions);
+            }
+            return new ExpressionInstruction(instructions, finalType);
         }
     }
 }

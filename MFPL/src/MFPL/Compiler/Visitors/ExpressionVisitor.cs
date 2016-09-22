@@ -73,23 +73,24 @@ namespace MFPL.Compiler.Visitors
 
         public override Result<ExpressionInstruction> VisitFunctionCallExpression([NotNull] FunctionCallExpressionContext context)
         {
-            throw new NotImplementedException();
-            //var syntax = context.GetChild(0).GetText();
-            //var expressions = context.children.OfType<ExpressionContext>();
+            var syntax = context.GetChild(0).GetText();
+            var expressions = context.children.OfType<ExpressionContext>();
 
-            //var expTypes = expressions.Select(x => Visit(x)).ToList();
-            //foreach (var type in expTypes)
-            //{
-            //    if (type.IsFailure) return type;
-            //}
+            var expTypes = expressions.Select(x => Visit(x)).ToList();
+            foreach (var type in expTypes)
+            {
+                if (type.IsFailure) return type;
+            }
 
-            //var types = expTypes.Select(x => x.Value).ToArray();
-
-            //var function = KnownFunction.GetFunction(syntax, types);
-            //if (function.IsFailure) return Result.Fail<MfplTypes>(function.Error);
-
-            //function.Value.Emiter(il);
-            //return Result.Ok(function.Value.ReturnType);
+            var types = expTypes.Select(x => x.Value.ResultType).ToArray();
+            var function = KnownFunction.GetFunction(syntax, types);
+            return Result.Ok(function)
+                .OnSuccess(v =>
+                {
+                    return ExpressionInstruction.CombineWithType(
+                        v.Value.ReturnType,
+                        expTypes.Select(x => x.Value));
+                });
         }
     }
 }
