@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MFPL.Compiler.Core
 {
-    public class Instruction
+    public struct Instruction
     {
         public OpCode OpCode { get; }
 

@@ -105,7 +105,7 @@ namespace MFPL.Compiler.Visitors
                         case ">=":
                             return Result.Ok(v.CopyAddInstruction(
                                 Instruction.Create(OpCodes.Clt),
-                                Instruction.Create(OpCodes.Ldc_I4_0), 
+                                Instruction.Create(OpCodes.Ldc_I4_0),
                                 Instruction.Create(OpCodes.Ceq)));
                         case "<=":
                             return Result.Ok(v.CopyAddInstruction(
@@ -119,7 +119,7 @@ namespace MFPL.Compiler.Visitors
                             return Result.Ok(v.CopyAddInstruction(
                                 Instruction.Create(OpCodes.Or)));
                         case "==":
-                            if (v.ResultType == MfplTypes.String)
+                            if (other.ResultType == MfplTypes.String)
                             {
                                 var method = typeof(string).GetMethod(
                                     nameof(string.Compare), new[] { typeof(string), typeof(string) });
@@ -132,7 +132,7 @@ namespace MFPL.Compiler.Visitors
                                     Instruction.Create(OpCodes.Ceq)));
                             }
                         case "!=":
-                            if (v.ResultType == MfplTypes.String)
+                            if (other.ResultType == MfplTypes.String)
                             {
                                 var method = typeof(string).GetMethod(
                                     nameof(string.Compare), new[] { typeof(string), typeof(string) });
@@ -159,6 +159,27 @@ namespace MFPL.Compiler.Visitors
             return new ExpressionInstruction(
                 new List<Instruction> { instruction },
                 resultType);
+        }
+
+        public static ExpressionInstruction FromValue(string value)
+        {
+            return new ExpressionInstruction(
+                new List<Instruction> { Instruction.Create(OpCodes.Ldstr, value) },
+                MfplTypes.String);
+        }
+
+        public static ExpressionInstruction FromValue(double value)
+        {
+            return new ExpressionInstruction(
+                new List<Instruction> { Instruction.Create(OpCodes.Ldc_R8, value) },
+                MfplTypes.Number);
+        }
+
+        public static ExpressionInstruction FromValue(bool value)
+        {
+            return new ExpressionInstruction(
+                new List<Instruction> { Instruction.Create(value ? OpCodes.Ldc_I4_1: OpCodes.Ldc_I4_0) },
+                MfplTypes.Bool);
         }
     }
 }

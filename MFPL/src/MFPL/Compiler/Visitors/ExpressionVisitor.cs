@@ -35,23 +35,17 @@ namespace MFPL.Compiler.Visitors
                 case MfplLexer.STRING:
                     return MfplStringUtil.Parse(node.Text).OnSuccess(str =>
                     {
-                        return ExpressionInstruction.Create(
-                            Instruction.Create(OpCodes.Ldstr, str), 
-                            MfplTypes.String);
+                        return ExpressionInstruction.FromValue(str);
                     });
                 case MfplLexer.NUMBER:
                     return MfplNumberUtil.Parse(node.Text).OnSuccess(num =>
                     {
-                        return ExpressionInstruction.Create(
-                            Instruction.Create(OpCodes.Ldc_R8, num),
-                            MfplTypes.Number);
+                        return ExpressionInstruction.FromValue(num);
                     });
                 case MfplLexer.BOOL:
                     return MfplBoolUtil.Parse(node.Text).OnSuccess(b =>
                     {
-                        return ExpressionInstruction.Create(
-                            Instruction.Create(b ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0),
-                            MfplTypes.Bool);
+                        return ExpressionInstruction.FromValue(b);
                     });
                 default:
                     return Result.Fail<ExpressionInstruction>($"Unkown type for literial '{context.GetText()}'.");
