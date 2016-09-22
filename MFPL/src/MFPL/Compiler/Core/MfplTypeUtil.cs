@@ -8,22 +8,6 @@ namespace MFPL.Compiler.Core
 {
     public static class MfplTypeUtil
     {
-        public static Result<MfplTypes> BinaryOperator(Result<MfplTypes> type1, Result<MfplTypes> type2, string op)
-        {
-            if (type1.IsFailure)
-            {
-                return type1;
-            }
-            else if (type2.IsFailure)
-            {
-                return type2;
-            }
-            else
-            {
-                return BinaryOperator(type1.Value, type2.Value, op);
-            }
-        }
-
         public static Result<MfplTypes> BinaryOperator(MfplTypes type1, MfplTypes type2, string op)
         {
             if (type1 != type2)
@@ -68,18 +52,6 @@ namespace MFPL.Compiler.Core
             else
             {
                 return Result.Fail<MfplTypes>($"Unknown binary operator '{op}'.");
-            }
-        }
-
-        public static Result<MfplTypes> UnaryOperator(string op, Result<MfplTypes> type)
-        {
-            if (type.IsFailure)
-            {
-                return type;
-            }
-            else
-            {
-                return UnaryOperator(op, type.Value);
             }
         }
 

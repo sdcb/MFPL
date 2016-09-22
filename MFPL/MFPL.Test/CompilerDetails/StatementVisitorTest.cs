@@ -24,16 +24,16 @@ namespace MFPL.Test.CompilerDetails
             Assert.True(result.IsFailure);
         }
 
-        [Fact]
-        public void FunctionCallCanBeStatement()
-        {
-            var sourceCode = "printHelloWorld();";
-            var parser = MfplCompiler.Helper.BuildMfplParser(sourceCode);
-            var visitor = new StatementVisitor(GetILBuilder(), ContextScope.CreateEmpty<LocalBuilder>());
-            var result = visitor.Visit(parser.root());
+        //[Fact]
+        //public void FunctionCallCanBeStatement()
+        //{
+        //    var sourceCode = "printHelloWorld();";
+        //    var parser = MfplCompiler.Helper.BuildMfplParser(sourceCode);
+        //    var visitor = new StatementVisitor(GetILBuilder(), ContextScope.CreateEmpty<LocalBuilder>());
+        //    var result = visitor.Visit(parser.root());
 
-            Assert.True(result.IsSuccess);
-        }
+        //    Assert.True(result.IsSuccess);
+        //}
 
         [Fact]
         public void BinaryExpressionCannotBeStatement()

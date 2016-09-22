@@ -34,8 +34,9 @@ namespace MFPL.Compiler.Visitors
 
         public new Result<MfplTypes> VisitExpression([NotNull] ExpressionContext context)
         {
-            return new ExpressionVisitor(il, scope)
-                .Visit(context);
+            throw new NotImplementedException();
+            //return new ExpressionVisitor(il, scope)
+            //    .Visit(context);
         }
     }
 }

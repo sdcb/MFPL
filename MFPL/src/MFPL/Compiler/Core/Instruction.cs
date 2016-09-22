@@ -9,11 +9,11 @@ namespace MFPL.Compiler.Core
 {
     public class Instruction
     {
-        public OpCode OpCode { get; set; }
+        public OpCode OpCode { get; }
 
-        public InstructionType InstructionType { get; set; }
+        public InstructionType InstructionType { get; }
 
-        public object Value { get; set; }
+        public object Value { get; }
 
         private Instruction(OpCode opCode, object value, InstructionType instructionType)
         {
