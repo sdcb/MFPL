@@ -88,7 +88,7 @@ namespace MFPL.Compiler.Visitors
                 .OnSuccess(v =>
                 {
                     return ExpressionInstruction.CombineWithType(
-                        v.Value.ReturnType,
+                        v.Value.ResultType,
                         expTypes.Select(x => x.Value));
                 });
         }

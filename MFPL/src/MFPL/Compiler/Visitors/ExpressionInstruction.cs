@@ -60,7 +60,7 @@ namespace MFPL.Compiler.Visitors
         {
             var me = this;
             return MfplTypeUtil.BinaryOperator(ResultType, other.ResultType, op)
-                .OnSuccess(type => CombineWithType(new[] { me, other }, type))
+                .OnSuccess(type => CombineWithType(type, new[] { me, other }))
                 .OnSuccess(v =>
                 {
                     switch (op)

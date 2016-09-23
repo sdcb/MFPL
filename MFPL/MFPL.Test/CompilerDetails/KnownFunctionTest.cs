@@ -16,7 +16,7 @@ namespace MFPL.Test.CompilerDetails
         {
             var func = KnownFunction.GetFunction("printHelloWorld", new MfplTypes[] { });
             Assert.True(func.IsSuccess);
-            Assert.Equal(MfplTypes.Void, func.Value.ReturnType);
+            Assert.Equal(MfplTypes.Void, func.Value.ResultType);
         }
 
         [Fact]
