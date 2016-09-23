@@ -161,6 +161,13 @@ namespace MFPL.Compiler.Visitors
                 resultType);
         }
 
+        public static ExpressionInstruction Create(LocalBuilder localBuilder)
+        {
+            return new ExpressionInstruction(
+                new List<Instruction> { Instruction.Create(OpCodes.Ldloc, localBuilder) },
+                MfplTypeUtil.TypeToMfplType(localBuilder.LocalType));
+        }
+
         public static ExpressionInstruction Create(IList<Instruction> instruction, MfplTypes resultType)
         {
             return new ExpressionInstruction(instruction, resultType);

@@ -16,6 +16,7 @@ statement
 
 expression
 	: value                                           #ValueExpression
+	| SYNTAX                                          #SyntaxExpression
 	| '-' expression                                  #UnaryExpression
 	| '!' expression                                  #UnaryExpression
 	| SYNTAX '(' expression? (',' expression)* ')'    #FunctionCallExpression

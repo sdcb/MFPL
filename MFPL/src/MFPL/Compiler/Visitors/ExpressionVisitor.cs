@@ -91,6 +91,13 @@ namespace MFPL.Compiler.Visitors
                 });
         }
 
+        public override Result<ExpressionInstruction> VisitSyntaxExpression([NotNull] SyntaxExpressionContext context)
+        {
+            return Result.Ok(context.GetChild(0).GetText())
+                .OnSuccess(syntax => scope.Get(syntax))
+                .OnSuccess(local => ExpressionInstruction.Create(local));
+        }
+
         protected override Result<ExpressionInstruction> AggregateResult(
             Result<ExpressionInstruction> aggregate, 
             Result<ExpressionInstruction> nextResult)

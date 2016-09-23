@@ -84,5 +84,25 @@ namespace MFPL.Compiler.Core
                 return Result.Fail<MfplTypes>($"Unknown unary operator '{op}'.");
             }
         }
+
+        public static MfplTypes TypeToMfplType(Type type)
+        {
+            if (type == typeof(double))
+            {
+                return MfplTypes.Number;
+            }
+            else if (type == typeof(bool))
+            {
+                return MfplTypes.Bool;
+            }
+            else if (type == typeof(string))
+            {
+                return MfplTypes.String;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException(nameof(type), $"Unknown type: {type}.");
+            }
+        }
     }
 }
