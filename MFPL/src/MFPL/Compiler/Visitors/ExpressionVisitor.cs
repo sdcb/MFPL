@@ -18,12 +18,10 @@ namespace MFPL.Compiler.Visitors
 {
     public class ExpressionVisitor : MfplBaseVisitor<Result<ExpressionInstruction>>
     {
-        private readonly ILGenerator il;
         private readonly ContextScope<LocalBuilder> scope;
 
-        public ExpressionVisitor(ILGenerator il, ContextScope<LocalBuilder> scope)
+        public ExpressionVisitor(ContextScope<LocalBuilder> scope)
         {
-            this.il = il;
             this.scope = scope;
         }
 
@@ -91,6 +89,24 @@ namespace MFPL.Compiler.Visitors
                         v.Value.ResultType,
                         expTypes.Select(x => x.Value));
                 });
+        }
+
+        protected override Result<ExpressionInstruction> AggregateResult(
+            Result<ExpressionInstruction> aggregate, 
+            Result<ExpressionInstruction> nextResult)
+        {
+            if (aggregate != null && nextResult == null)
+            {
+                return aggregate;
+            }
+            else if (aggregate == null && nextResult != null)
+            {
+                return nextResult;
+            }
+            else
+            {
+                throw new ArgumentException("Expression should never eval to multiple result.");
+            }
         }
     }
 }

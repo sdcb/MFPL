@@ -16,6 +16,15 @@ namespace MFPL.Compiler.Visitors
 
         public MfplTypes ResultType { get; }
 
+        public ExpressionInstruction EmitAll(ILGenerator il)
+        {
+            foreach (var instruction in Instructions)
+            {
+                instruction.Emit(il);
+            }
+            return this;
+        }
+
         private ExpressionInstruction(IList<Instruction> instructions, MfplTypes resultType)
         {
             Instructions = new ReadOnlyCollection<Instruction>(instructions);
