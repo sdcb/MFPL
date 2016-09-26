@@ -25,7 +25,7 @@ namespace MFPL.Test.CompilerDetails
         }
 
         [Fact]
-        public void CannotGetEmpty()
+        public void CannotGetNotExistedKey()
         {
             var scope = ContextScope.CreateEmpty<string>();
             var getResult = scope.Get("not_existed_key");
