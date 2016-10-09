@@ -33,7 +33,7 @@ namespace MFPL.Test.CompilerDetails
         }
 
         [Fact]
-        public void CanGetNestedScope()
+        public void CanGetInNestedScope()
         {
             var outScope = ContextScope.CreateEmpty<string>();
             var inscope = ContextScope.CreateInScope(outScope);
