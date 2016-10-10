@@ -13,7 +13,7 @@ namespace MFPL.Compiler.Core.Instructions
         public static DeclareLocalInstruction Create(MfplTypes type)
             => new DeclareLocalInstruction { MfplType = type };
 
-        LocalBuilder Emit(ILGenerator il)
+        public LocalBuilder Emit(ILGenerator il)
             => il.DeclareLocal(MfplTypeUtil.MfplTypeToType(MfplType));
     }
 }

@@ -16,13 +16,12 @@ namespace MFPL.Compiler.Core.Instructions
 
         public MfplTypes ResultType { get; }
 
-        public ExpressionInstructions EmitAll(ILGenerator il)
+        public void EmitAll(ILGenerator il)
         {
             foreach (var instruction in Instructions)
             {
                 instruction.Emit(il);
             }
-            return this;
         }
 
         private ExpressionInstructions(IList<Instruction> instructions, MfplTypes resultType)
