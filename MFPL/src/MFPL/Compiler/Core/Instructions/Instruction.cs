@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading.Tasks;
 
-namespace MFPL.Compiler.Core
+namespace MFPL.Compiler.Core.Instructions
 {
     public struct Instruction
     {

@@ -8,15 +8,15 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading.Tasks;
 
-namespace MFPL.Compiler.Visitors
+namespace MFPL.Compiler.Core.Instructions
 {
-    public struct ExpressionInstruction
+    public class ExpressionInstructions : StatementInstruction
     {
         public ReadOnlyCollection<Instruction> Instructions { get; }
 
         public MfplTypes ResultType { get; }
 
-        public ExpressionInstruction EmitAll(ILGenerator il)
+        public ExpressionInstructions EmitAll(ILGenerator il)
         {
             foreach (var instruction in Instructions)
             {
@@ -25,27 +25,27 @@ namespace MFPL.Compiler.Visitors
             return this;
         }
 
-        private ExpressionInstruction(IList<Instruction> instructions, MfplTypes resultType)
+        private ExpressionInstructions(IList<Instruction> instructions, MfplTypes resultType)
         {
             Instructions = new ReadOnlyCollection<Instruction>(instructions);
             ResultType = resultType;
         }
 
-        private ExpressionInstruction CopyChangeType(MfplTypes resultType)
+        private ExpressionInstructions CopyChangeType(MfplTypes resultType)
         {
-            return new ExpressionInstruction(
+            return new ExpressionInstructions(
                 Instructions,
                 resultType);
         }
 
-        private ExpressionInstruction CopyAddInstruction(params Instruction[] instruction)
+        private ExpressionInstructions CopyAddInstruction(params Instruction[] instruction)
         {
             var instructions = new List<Instruction>(Instructions);
             instructions.AddRange(instruction);
-            return new ExpressionInstruction(instructions, ResultType);
+            return new ExpressionInstructions(instructions, ResultType);
         }
 
-        public Result<ExpressionInstruction> ByUnaryOperation(string op)
+        public Result<ExpressionInstructions> ByUnaryOperation(string op)
         {
             var me = this;
             return MfplTypeUtil.UnaryOperator(op, ResultType).OnSuccess(type =>
@@ -60,12 +60,12 @@ namespace MFPL.Compiler.Visitors
                             Instruction.Create(OpCodes.Ldc_I4_0),
                             Instruction.Create(OpCodes.Ceq)));
                     default:
-                        return Result.Fail<ExpressionInstruction>($"Unknown unary operator: '{op}'.");
+                        return Result.Fail<ExpressionInstructions>($"Unknown unary operator: '{op}'.");
                 }
             });
         }
 
-        public Result<ExpressionInstruction> ByBinaryOperator(string op, ExpressionInstruction other)
+        public Result<ExpressionInstructions> ByBinaryOperator(string op, ExpressionInstructions other)
         {
             var me = this;
             return MfplTypeUtil.BinaryOperator(ResultType, other.ResultType, op)
@@ -149,73 +149,73 @@ namespace MFPL.Compiler.Visitors
                                     Instruction.Create(OpCodes.Ceq)));
                             }
                         default:
-                            return Result.Fail<ExpressionInstruction>($"Unknown binary operator '{op}'.");
+                            return Result.Fail<ExpressionInstructions>($"Unknown binary operator '{op}'.");
                     }
                 });
         }
 
-        public static ExpressionInstruction Create(Instruction instruction, MfplTypes resultType)
+        public static ExpressionInstructions Create(Instruction instruction, MfplTypes resultType)
         {
-            return new ExpressionInstruction(
+            return new ExpressionInstructions(
                 new List<Instruction> { instruction },
                 resultType);
         }
 
-        public static ExpressionInstruction Create(LocalBuilder localBuilder)
+        public static ExpressionInstructions Create(LocalBuilder localBuilder)
         {
-            return new ExpressionInstruction(
+            return new ExpressionInstructions(
                 new List<Instruction> { Instruction.Create(OpCodes.Ldloc, localBuilder) },
                 MfplTypeUtil.TypeToMfplType(localBuilder.LocalType));
         }
 
-        public static ExpressionInstruction Create(IList<Instruction> instruction, MfplTypes resultType)
+        public static ExpressionInstructions Create(IList<Instruction> instruction, MfplTypes resultType)
         {
-            return new ExpressionInstruction(instruction, resultType);
+            return new ExpressionInstructions(instruction, resultType);
         }
 
-        public static ExpressionInstruction FromValue(string value)
+        public static ExpressionInstructions FromValue(string value)
         {
-            return new ExpressionInstruction(
+            return new ExpressionInstructions(
                 new List<Instruction> { Instruction.Create(OpCodes.Ldstr, value) },
                 MfplTypes.String);
         }
 
-        public static ExpressionInstruction FromValue(double value)
+        public static ExpressionInstructions FromValue(double value)
         {
-            return new ExpressionInstruction(
+            return new ExpressionInstructions(
                 new List<Instruction> { Instruction.Create(OpCodes.Ldc_R8, value) },
                 MfplTypes.Number);
         }
 
-        public static ExpressionInstruction FromValue(bool value)
+        public static ExpressionInstructions FromValue(bool value)
         {
-            return new ExpressionInstruction(
+            return new ExpressionInstructions(
                 new List<Instruction> { Instruction.Create(value ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0) },
                 MfplTypes.Bool);
         }
 
-        public static ExpressionInstruction CombineWithType(
+        public static ExpressionInstructions CombineWithType(
             MfplTypes finalType, 
-            params ExpressionInstruction[] eis)
+            params ExpressionInstructions[] eis)
         {
             var instructions = new List<Instruction>();
             foreach (var ei in eis)
             {
                 instructions.AddRange(ei.Instructions);
             }
-            return new ExpressionInstruction(instructions, finalType);
+            return new ExpressionInstructions(instructions, finalType);
         }
 
-        public static ExpressionInstruction CombineWithType(
+        public static ExpressionInstructions CombineWithType(
             MfplTypes finalType, 
-            IEnumerable<ExpressionInstruction> eis)
+            IEnumerable<ExpressionInstructions> eis)
         {
             var instructions = new List<Instruction>();
             foreach (var ei in eis)
             {
                 instructions.AddRange(ei.Instructions);
             }
-            return new ExpressionInstruction(instructions, finalType);
+            return new ExpressionInstructions(instructions, finalType);
         }
     }
 }

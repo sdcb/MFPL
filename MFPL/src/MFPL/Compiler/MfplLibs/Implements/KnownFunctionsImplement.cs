@@ -1,4 +1,5 @@
 ﻿using MFPL.Compiler.Core;
+using MFPL.Compiler.Core.Instructions;
 using MFPL.Compiler.Visitors;
 using System;
 using System.Collections.Generic;
@@ -12,9 +13,9 @@ namespace MFPL.Compiler.MfplLibs.Implements
     public class KnownFunctionsImplement
     {
         [MfplFunctionDef("printHelloWorld", new MfplTypes[] { })]
-        public static ExpressionInstruction PrintHelloWorld()
+        public static ExpressionInstructions PrintHelloWorld()
         {
-            return ExpressionInstruction.Create(new List<Instruction>
+            return ExpressionInstructions.Create(new List<Instruction>
             {
                 Instruction.Create(OpCodes.Ldstr, "Hello World"),
                 Instruction.Create(OpCodes.Call,

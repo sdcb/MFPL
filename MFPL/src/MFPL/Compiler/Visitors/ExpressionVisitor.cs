@@ -13,10 +13,11 @@ using MFPL.Parser;
 using System.Reflection;
 using MFPL.Compiler.MfplLibs;
 using MFPL.Compiler.Core;
+using MFPL.Compiler.Core.Instructions;
 
 namespace MFPL.Compiler.Visitors
 {
-    public class ExpressionVisitor : MfplBaseVisitor<Result<ExpressionInstruction>>
+    public class ExpressionVisitor : MfplBaseVisitor<Result<ExpressionInstructions>>
     {
         private readonly ContextScope<LocalBuilder> scope;
 
@@ -25,7 +26,7 @@ namespace MFPL.Compiler.Visitors
             this.scope = scope;
         }
 
-        public override Result<ExpressionInstruction> VisitValueExpression([NotNull] ValueExpressionContext context)
+        public override Result<ExpressionInstructions> VisitValueExpression([NotNull] ValueExpressionContext context)
         {
             var node = context.GetChild<ValueContext>(0).GetChild<TerminalNodeImpl>(0).Symbol;
             switch (node.Type)
@@ -33,24 +34,24 @@ namespace MFPL.Compiler.Visitors
                 case MfplLexer.STRING:
                     return MfplStringUtil.Parse(node.Text).OnSuccess(str =>
                     {
-                        return ExpressionInstruction.FromValue(str);
+                        return ExpressionInstructions.FromValue(str);
                     });
                 case MfplLexer.NUMBER:
                     return MfplNumberUtil.Parse(node.Text).OnSuccess(num =>
                     {
-                        return ExpressionInstruction.FromValue(num);
+                        return ExpressionInstructions.FromValue(num);
                     });
                 case MfplLexer.BOOL:
                     return MfplBoolUtil.Parse(node.Text).OnSuccess(b =>
                     {
-                        return ExpressionInstruction.FromValue(b);
+                        return ExpressionInstructions.FromValue(b);
                     });
                 default:
-                    return Result.Fail<ExpressionInstruction>($"Unkown type for literial '{context.GetText()}'.");
+                    return Result.Fail<ExpressionInstructions>($"Unkown type for literial '{context.GetText()}'.");
             }
         }
 
-        public override Result<ExpressionInstruction> VisitUnaryExpression([NotNull] UnaryExpressionContext context)
+        public override Result<ExpressionInstructions> VisitUnaryExpression([NotNull] UnaryExpressionContext context)
         {
             var exp1 = Visit(context.GetChild<ExpressionContext>(0));
             var op = context.GetChild(0).GetText();
@@ -58,7 +59,7 @@ namespace MFPL.Compiler.Visitors
             return exp1.OnSuccess(ei => ei.ByUnaryOperation(op));
         }
 
-        public override Result<ExpressionInstruction> VisitBinaryExpression([NotNull] BinaryExpressionContext context)
+        public override Result<ExpressionInstructions> VisitBinaryExpression([NotNull] BinaryExpressionContext context)
         {
             var exp1 = Visit(context.GetChild<ExpressionContext>(0));
             var exp2 = Visit(context.GetChild<ExpressionContext>(1));
@@ -69,7 +70,7 @@ namespace MFPL.Compiler.Visitors
                 .OnSuccess(_ => exp1.Value.ByBinaryOperator(op, exp2.Value));
         }
 
-        public override Result<ExpressionInstruction> VisitFunctionCallExpression([NotNull] FunctionCallExpressionContext context)
+        public override Result<ExpressionInstructions> VisitFunctionCallExpression([NotNull] FunctionCallExpressionContext context)
         {
             var syntax = context.GetChild(0).GetText();
             var expressions = context.children.OfType<ExpressionContext>();
@@ -85,22 +86,22 @@ namespace MFPL.Compiler.Visitors
             return Result.Ok(function)
                 .OnSuccess(v =>
                 {
-                    return ExpressionInstruction.CombineWithType(
+                    return ExpressionInstructions.CombineWithType(
                         v.Value.ResultType,
                         expTypes.Select(x => x.Value));
                 });
         }
 
-        public override Result<ExpressionInstruction> VisitSyntaxExpression([NotNull] SyntaxExpressionContext context)
+        public override Result<ExpressionInstructions> VisitSyntaxExpression([NotNull] SyntaxExpressionContext context)
         {
             return Result.Ok(context.GetChild(0).GetText())
                 .OnSuccess(syntax => scope.Get(syntax))
-                .OnSuccess(local => ExpressionInstruction.Create(local));
+                .OnSuccess(local => ExpressionInstructions.Create(local));
         }
 
-        protected override Result<ExpressionInstruction> AggregateResult(
-            Result<ExpressionInstruction> aggregate, 
-            Result<ExpressionInstruction> nextResult)
+        protected override Result<ExpressionInstructions> AggregateResult(
+            Result<ExpressionInstructions> aggregate, 
+            Result<ExpressionInstructions> nextResult)
         {
             if (aggregate != null && nextResult == null)
             {

@@ -1,5 +1,6 @@
 ﻿using MFPL.Compiler;
 using MFPL.Compiler.Core;
+using MFPL.Compiler.Core.Instructions;
 using MFPL.Compiler.Visitors;
 using System;
 using System.Collections.Generic;

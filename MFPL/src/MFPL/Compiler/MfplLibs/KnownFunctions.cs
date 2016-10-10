@@ -1,4 +1,5 @@
 ﻿using MFPL.Compiler.Core;
+using MFPL.Compiler.Core.Instructions;
 using MFPL.Compiler.MfplLibs.Implements;
 using MFPL.Compiler.Visitors;
 using MFPL.Functional;
@@ -13,7 +14,7 @@ namespace MFPL.Compiler.MfplLibs
 {
     public class KnownFunction
     {
-        public static Result<ExpressionInstruction> GetFunction(string name, MfplTypes[] parameters)
+        public static Result<ExpressionInstructions> GetFunction(string name, MfplTypes[] parameters)
         {
             var mi = typeof(KnownFunctionsImplement)
                 .GetMethods(BindingFlags.Static | BindingFlags.Public)
@@ -28,11 +29,11 @@ namespace MFPL.Compiler.MfplLibs
 
             if (mi == null)
             {
-                return Result.Fail<ExpressionInstruction>(
+                return Result.Fail<ExpressionInstructions>(
                     $"Cannot found function '{name}' with parameter '{string.Join(",", parameters)}'.");
             }
 
-            var emiter = (Func<ExpressionInstruction>)mi.Method.CreateDelegate(typeof(Func<ExpressionInstruction>));
+            var emiter = (Func<ExpressionInstructions>)mi.Method.CreateDelegate(typeof(Func<ExpressionInstructions>));
             return Result.Ok(emiter());
         }
     }

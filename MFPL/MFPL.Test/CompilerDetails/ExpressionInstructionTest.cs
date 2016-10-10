@@ -1,4 +1,5 @@
 ﻿using MFPL.Compiler.Core;
+using MFPL.Compiler.Core.Instructions;
 using MFPL.Compiler.Visitors;
 using System;
 using System.Collections.Generic;
@@ -14,8 +15,8 @@ namespace MFPL.Test.CompilerDetails
         [Fact]
         public void SimpleAdd()
         {
-            var n1 = ExpressionInstruction.FromValue(3);
-            var n2 = ExpressionInstruction.FromValue(4);
+            var n1 = ExpressionInstructions.FromValue(3);
+            var n2 = ExpressionInstructions.FromValue(4);
             var result = n1.ByBinaryOperator("+", n2);
 
             Assert.True(result.IsSuccess);
@@ -34,8 +35,8 @@ namespace MFPL.Test.CompilerDetails
         [Fact]
         public void StringAdd()
         {
-            var n1 = ExpressionInstruction.FromValue("3");
-            var n2 = ExpressionInstruction.FromValue("4");
+            var n1 = ExpressionInstructions.FromValue("3");
+            var n2 = ExpressionInstructions.FromValue("4");
             var result = n1.ByBinaryOperator("+", n2);
 
             Assert.True(result.IsSuccess);
@@ -50,8 +51,8 @@ namespace MFPL.Test.CompilerDetails
         [Fact]
         public void NumberGt()
         {
-            var n1 = ExpressionInstruction.FromValue(3);
-            var n2 = ExpressionInstruction.FromValue(4);
+            var n1 = ExpressionInstructions.FromValue(3);
+            var n2 = ExpressionInstructions.FromValue(4);
             var result = n1.ByBinaryOperator(">", n2);
 
             Assert.True(result.IsSuccess);
@@ -70,8 +71,8 @@ namespace MFPL.Test.CompilerDetails
         [Fact]
         public void NumberLt()
         {
-            var n1 = ExpressionInstruction.FromValue(3);
-            var n2 = ExpressionInstruction.FromValue(4);
+            var n1 = ExpressionInstructions.FromValue(3);
+            var n2 = ExpressionInstructions.FromValue(4);
             var result = n1.ByBinaryOperator("<=", n2);
 
             Assert.True(result.IsSuccess);
@@ -92,8 +93,8 @@ namespace MFPL.Test.CompilerDetails
         [Fact]
         public void NumberCompare()
         {
-            var n1 = ExpressionInstruction.FromValue(3);
-            var n2 = ExpressionInstruction.FromValue(4);
+            var n1 = ExpressionInstructions.FromValue(3);
+            var n2 = ExpressionInstructions.FromValue(4);
             var result = n1.ByBinaryOperator("!=", n2);
 
             Assert.True(result.IsSuccess);
@@ -114,8 +115,8 @@ namespace MFPL.Test.CompilerDetails
         [Fact]
         public void StringCompare()
         {
-            var n1 = ExpressionInstruction.FromValue("3");
-            var n2 = ExpressionInstruction.FromValue("4");
+            var n1 = ExpressionInstructions.FromValue("3");
+            var n2 = ExpressionInstructions.FromValue("4");
             var result = n1.ByBinaryOperator("!=", n2);
 
             Assert.True(result.IsSuccess);
