@@ -149,6 +149,6 @@ namespace MFPL.Compiler.Core
         Short,
         Double,
         Byte,
-        Labels
+        Labels, 
     }
 }

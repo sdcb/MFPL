@@ -104,5 +104,20 @@ namespace MFPL.Compiler.Core
                 throw new ArgumentOutOfRangeException(nameof(type), $"Unknown type: {type}.");
             }
         }
+
+        public static Type MfplTypeToType(MfplTypes type)
+        {
+            switch (type)
+            {
+                case MfplTypes.Bool:
+                    return typeof(bool);
+                case MfplTypes.Number:
+                    return typeof(double);
+                case MfplTypes.String:
+                    return typeof(string);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), $"Unknown type: {type}.");
+            }
+        }
     }
 }
