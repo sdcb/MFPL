@@ -5,12 +5,12 @@
   },
 
   "dependencies": {
-    "Antlr4.Runtime": "4.5.3.1-beta001",
+    "Antlr4.Runtime": "4.5.4-beta001", 
     "Microsoft.NETCore.App": {
       "type": "platform",
-      "version": "1.0.1"
+      "version": "1.1.0"
     }, 
-    "System.Reflection.Emit": "4.0.1"
+    "Sigil": "4.7.0"
   },
 
   "frameworks": {
