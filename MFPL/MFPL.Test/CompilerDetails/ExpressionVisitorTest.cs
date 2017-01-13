@@ -1,7 +1,8 @@
 ﻿using MFPL.Compiler;
 using MFPL.Compiler.Core;
-using MFPL.Compiler.Core.Instructions;
 using MFPL.Compiler.Visitors;
+using Sigil;
+using Sigil.NonGeneric;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,17 +18,15 @@ namespace MFPL.Test.CompilerDetails
         [Fact]
         public void Smoke()
         {
+            var il = MakeEmptyFunction();
             var sourceCode = "true";
             var parser = MfplCompiler.Helper.BuildMfplParser(sourceCode);
-            var visitor = new ExpressionVisitor(ContextScope.CreateEmpty<LocalBuilder>());
+            var visitor = new ExpressionVisitor(il, ContextScope.CreateEmpty<Local>());
             var result = visitor.Visit(parser.root());
 
             Assert.True(result.IsSuccess);
-            var expected = new List<Instruction>
-            {
-                Instruction.Create(OpCodes.Ldc_I4_1)
-            };
-            Assert.Equal(expected, result.Value.Instructions);
+            var instruction = il.Instructions();
+            Assert.Equal("ldc.i4.1", instruction);
         }
 
         [Fact]
@@ -35,7 +34,7 @@ namespace MFPL.Test.CompilerDetails
         {
             var sourceCode = "a+b";
             var parser = MfplCompiler.Helper.BuildMfplParser(sourceCode);
-            var visitor = new ExpressionVisitor(ContextScope.CreateEmpty<LocalBuilder>());
+            var visitor = new ExpressionVisitor(MakeEmptyFunction(), ContextScope.CreateEmpty<Local>());
             var result = visitor.Visit(parser.root());
 
             Assert.True(result.IsFailure);
@@ -44,28 +43,27 @@ namespace MFPL.Test.CompilerDetails
         [Fact]
         public void CanGetExistingVar()
         {
-            var il = GetILBuilder();
-            var scope = ContextScope.CreateEmpty<LocalBuilder>();
+            var il = MakeEmptyFunction();
+            var scope = ContextScope.CreateEmpty<Local>();
             scope.Declare("a", il.DeclareLocal(typeof(double)));
             scope.Declare("b", il.DeclareLocal(typeof(double)));
 
             var sourceCode = "a+b";
             var parser = MfplCompiler.Helper.BuildMfplParser(sourceCode);
-            var visitor = new ExpressionVisitor(scope);
+            var visitor = new ExpressionVisitor(il, scope);
             var result = visitor.Visit(parser.root());
 
             Assert.True(result.IsSuccess);
+            var insr = il.Instructions();
+            Assert.Equal(
+                "ldloc.0 // System.Double _local0\r\n" +
+                "ldloc.1 // System.Double _local1\r\n" +
+                "add", insr);
         }
 
-        private ILGenerator GetILBuilder()
+        private Emit MakeEmptyFunction()
         {
-            var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
-                new AssemblyName(Guid.NewGuid().ToString()), AssemblyBuilderAccess.RunAndCollect);
-            var module = assemblyBuilder
-                .DefineDynamicModule(Guid.NewGuid().ToString());
-            var method = module.DefineGlobalMethod(Guid.NewGuid().ToString(),
-                MethodAttributes.Public | MethodAttributes.Static, typeof(void), Type.EmptyTypes);
-            return method.GetILGenerator();
+            return Emit.NewDynamicMethod(typeof(void).GetType(), Type.EmptyTypes);
         }
     }
 }

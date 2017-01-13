@@ -1,6 +1,8 @@
 ﻿using MFPL.Compiler;
 using MFPL.Compiler.Core;
 using MFPL.Compiler.Visitors;
+using Sigil;
+using Sigil.NonGeneric;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +20,7 @@ namespace MFPL.Test.CompilerDetails
         {
             var sourceCode = "true;";
             var parser = MfplCompiler.Helper.BuildMfplParser(sourceCode);
-            var visitor = new StatementVisitor(GetILBuilder(), ContextScope.CreateEmpty<LocalBuilder>());
+            var visitor = new StatementVisitor(GetILBuilder(), ContextScope.CreateEmpty<Local>());
             var result = visitor.Visit(parser.root());
 
             Assert.True(result.IsFailure);
@@ -29,7 +31,7 @@ namespace MFPL.Test.CompilerDetails
         {
             var sourceCode = "printHelloWorld();";
             var parser = MfplCompiler.Helper.BuildMfplParser(sourceCode);
-            var visitor = new StatementVisitor(GetILBuilder(), ContextScope.CreateEmpty<LocalBuilder>());
+            var visitor = new StatementVisitor(GetILBuilder(), ContextScope.CreateEmpty<Local>());
             var result = visitor.Visit(parser.root());
 
             Assert.True(result.IsSuccess);
@@ -40,21 +42,15 @@ namespace MFPL.Test.CompilerDetails
         {
             var sourceCode = "3+4;";
             var parser = MfplCompiler.Helper.BuildMfplParser(sourceCode);
-            var visitor = new StatementVisitor(GetILBuilder(), ContextScope.CreateEmpty<LocalBuilder>());
+            var visitor = new StatementVisitor(GetILBuilder(), ContextScope.CreateEmpty<Local>());
             var result = visitor.Visit(parser.root());
 
             Assert.True(result.IsFailure);
         }
 
-        private ILGenerator GetILBuilder()
+        private Emit GetILBuilder()
         {
-            var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
-                new AssemblyName(Guid.NewGuid().ToString()), AssemblyBuilderAccess.RunAndCollect);
-            var module = assemblyBuilder
-                .DefineDynamicModule(Guid.NewGuid().ToString());
-            var method = module.DefineGlobalMethod(Guid.NewGuid().ToString(),
-                MethodAttributes.Public | MethodAttributes.Static, typeof(void), Type.EmptyTypes);
-            return method.GetILGenerator();
+            return Emit.NewDynamicMethod(typeof(void).GetType(), Type.EmptyTypes);
         }
     }
 }

@@ -11,22 +11,24 @@ using static MFPL.Parser.G4.MfplParser;
 using MFPL.Parser.Utilities;
 using MFPL.Parser;
 using System.Reflection;
-using MFPL.Compiler.MfplLibs;
 using MFPL.Compiler.Core;
-using MFPL.Compiler.Core.Instructions;
+using Sigil;
+using Sigil.NonGeneric;
 
 namespace MFPL.Compiler.Visitors
 {
-    public class ExpressionVisitor : MfplBaseVisitor<Result<ExpressionInstructions>>
+    public class ExpressionVisitor : MfplBaseVisitor<Result<MfplTypes>>
     {
-        private readonly ContextScope<LocalBuilder> scope;
+        private readonly Emit il;
+        private readonly ContextScope<Local> scope;
 
-        public ExpressionVisitor(ContextScope<LocalBuilder> scope)
+        public ExpressionVisitor(Emit il, ContextScope<Local> scope)
         {
+            this.il = il;
             this.scope = scope;
         }
 
-        public override Result<ExpressionInstructions> VisitValueExpression([NotNull] ValueExpressionContext context)
+        public override Result<MfplTypes> VisitValueExpression([NotNull] ValueExpressionContext context)
         {
             var node = context.GetChild<ValueContext>(0).GetChild<TerminalNodeImpl>(0).Symbol;
             switch (node.Type)
@@ -34,32 +36,51 @@ namespace MFPL.Compiler.Visitors
                 case MfplLexer.STRING:
                     return MfplStringUtil.Parse(node.Text).OnSuccess(str =>
                     {
-                        return ExpressionInstructions.FromValue(str);
+                        il.LoadConstant(str);
+                        return Result.Ok(MfplTypes.String);
                     });
                 case MfplLexer.NUMBER:
                     return MfplNumberUtil.Parse(node.Text).OnSuccess(num =>
                     {
-                        return ExpressionInstructions.FromValue(num);
+                        il.LoadConstant(num);
+                        return Result.Ok(MfplTypes.Number);
                     });
                 case MfplLexer.BOOL:
                     return MfplBoolUtil.Parse(node.Text).OnSuccess(b =>
                     {
-                        return ExpressionInstructions.FromValue(b);
+                        il.LoadConstant(b);
+                        return Result.Ok(MfplTypes.Bool);
                     });
                 default:
-                    return Result.Fail<ExpressionInstructions>($"Unkown type for literial '{context.GetText()}'.");
+                    return Result.Fail<MfplTypes>($"Unkown type for literial '{context.GetText()}'.");
             }
         }
 
-        public override Result<ExpressionInstructions> VisitUnaryExpression([NotNull] UnaryExpressionContext context)
+        public override Result<MfplTypes> VisitUnaryExpression([NotNull] UnaryExpressionContext context)
         {
             var exp1 = Visit(context.GetChild<ExpressionContext>(0));
             var op = context.GetChild(0).GetText();
 
-            return exp1.OnSuccess(ei => ei.ByUnaryOperation(op));
+            return exp1
+                .OnSuccess(_ => MfplTypeUtil.UnaryOperator(op, exp1.Value))
+                .OnSuccess(type =>
+                {
+                    switch (op)
+                    {
+                        case "-":
+                            il.Negate();
+                            return Result.Ok(type);
+                        case "!":
+                            il.LoadConstant(0);
+                            il.CompareEqual();
+                            return Result.Ok(type);
+                        default:
+                            return Result.Fail<MfplTypes>($"Unknown unary operator: '{op}'.");
+                    }
+                });
         }
 
-        public override Result<ExpressionInstructions> VisitBinaryExpression([NotNull] BinaryExpressionContext context)
+        public override Result<MfplTypes> VisitBinaryExpression([NotNull] BinaryExpressionContext context)
         {
             var exp1 = Visit(context.GetChild<ExpressionContext>(0));
             var exp2 = Visit(context.GetChild<ExpressionContext>(1));
@@ -67,10 +88,90 @@ namespace MFPL.Compiler.Visitors
 
             return exp1
                 .OnSuccess(_ => exp2)
-                .OnSuccess(_ => exp1.Value.ByBinaryOperator(op, exp2.Value));
+                .OnSuccess(_ => MfplTypeUtil.BinaryOperator(exp1.Value, exp2.Value, op))
+                .OnSuccess(type =>
+                {
+                    switch (op)
+                    {
+                        case "*":
+                            il.Multiply();
+                            return Result.Ok(type);
+                        case "/":
+                            il.Divide();
+                            return Result.Ok(type);
+                        case "+":
+                            if (type == MfplTypes.Number)
+                            {
+                                il.Add();
+                                return Result.Ok(type);
+                            }
+                            else
+                            {
+                                var method = typeof(string).GetMethod(
+                                    nameof(string.Concat), new[] { typeof(string), typeof(string) });
+                                il.Call(method);
+                                return Result.Ok(type);
+                            }
+                        case "-":
+                            il.Subtract();
+                            return Result.Ok(type);
+                        case ">":
+                            il.CompareGreaterThan();
+                            return Result.Ok(type);
+                        case "<":
+                            il.CompareLessThan();
+                            return Result.Ok(type);
+                        case ">=":
+                            il.CompareLessThan();
+                            il.LoadConstant(0);
+                            il.CompareEqual();
+                            return Result.Ok(type);
+                        case "<=":
+                            il.CompareGreaterThan();
+                            il.LoadConstant(0);
+                            il.CompareEqual();
+                            return Result.Ok(type);
+                        case "&&":
+                            il.And();
+                            return Result.Ok(type);
+                        case "||":
+                            il.Or();
+                            return Result.Ok(type);
+                        case "==":
+                            if (type == MfplTypes.String)
+                            {
+                                var method = typeof(string).GetMethod(
+                                    nameof(string.Compare), new[] { typeof(string), typeof(string) });
+                                il.Call(method);
+                            }
+                            else
+                            {
+                                il.CompareEqual();
+                            }
+                            return Result.Ok(type);
+                        case "!=":
+                            if (type == MfplTypes.String)
+                            {
+                                var method = typeof(string).GetMethod(
+                                    nameof(string.Compare), new[] { typeof(string), typeof(string) });
+                                il.Call(method);
+                                il.LoadConstant(0);
+                                il.CompareEqual();
+                            }
+                            else
+                            {
+                                il.CompareEqual();
+                                il.LoadConstant(0);
+                                il.CompareEqual();
+                            }
+                            return Result.Ok(type);
+                        default:
+                            return Result.Fail<MfplTypes>($"Unknown binary operator '{op}'.");
+                    }
+                });
         }
 
-        public override Result<ExpressionInstructions> VisitFunctionCallExpression([NotNull] FunctionCallExpressionContext context)
+        public override Result<MfplTypes> VisitFunctionCallExpression([NotNull] FunctionCallExpressionContext context)
         {
             var syntax = context.GetChild(0).GetText();
             var expressions = context.children.OfType<ExpressionContext>();
@@ -81,27 +182,23 @@ namespace MFPL.Compiler.Visitors
                 if (type.IsFailure) return type;
             }
 
-            var types = expTypes.Select(x => x.Value.ResultType).ToArray();
-            var function = KnownFunction.GetFunction(syntax, types);
-            return Result.Ok(function)
-                .OnSuccess(v =>
-                {
-                    return ExpressionInstructions.CombineWithType(
-                        v.Value.ResultType,
-                        expTypes.Select(x => x.Value));
-                });
+            return Result.Fail<MfplTypes>($"Function call for '{syntax}' is not supported.");
         }
 
-        public override Result<ExpressionInstructions> VisitSyntaxExpression([NotNull] SyntaxExpressionContext context)
+        public override Result<MfplTypes> VisitSyntaxExpression([NotNull] SyntaxExpressionContext context)
         {
             return Result.Ok(context.GetChild(0).GetText())
                 .OnSuccess(syntax => scope.Get(syntax))
-                .OnSuccess(local => ExpressionInstructions.Create(local));
+                .OnSuccess(local =>
+                {
+                    il.LoadLocal(local);
+                    return MfplTypeUtil.TypeToMfplType(local.LocalType);
+                });
         }
 
-        protected override Result<ExpressionInstructions> AggregateResult(
-            Result<ExpressionInstructions> aggregate, 
-            Result<ExpressionInstructions> nextResult)
+        protected override Result<MfplTypes> AggregateResult(
+            Result<MfplTypes> aggregate,
+            Result<MfplTypes> nextResult)
         {
             if (aggregate != null && nextResult == null)
             {
