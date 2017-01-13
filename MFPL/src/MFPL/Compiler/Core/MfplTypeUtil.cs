@@ -99,6 +99,10 @@ namespace MFPL.Compiler.Core
             {
                 return MfplTypes.String;
             }
+            else if (type == typeof(void))
+            {
+                return MfplTypes.Void;
+            }
             else
             {
                 throw new ArgumentOutOfRangeException(nameof(type), $"Unknown type: {type}.");

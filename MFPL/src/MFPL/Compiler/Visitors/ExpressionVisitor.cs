@@ -14,6 +14,7 @@ using System.Reflection;
 using MFPL.Compiler.Core;
 using Sigil;
 using Sigil.NonGeneric;
+using MFPL.KnownFunctions;
 
 namespace MFPL.Compiler.Visitors
 {
@@ -182,7 +183,12 @@ namespace MFPL.Compiler.Visitors
                 if (type.IsFailure) return type;
             }
 
-            return Result.Fail<MfplTypes>($"Function call for '{syntax}' is not supported.");
+            return KnownFunction.Get(syntax, expTypes.Select(x => x.Value).ToList())
+                .OnSuccess(m =>
+                {
+                    il.Call(m);
+                    return MfplTypeUtil.TypeToMfplType(m.ReturnType);
+                });
         }
 
         public override Result<MfplTypes> VisitSyntaxExpression([NotNull] SyntaxExpressionContext context)
