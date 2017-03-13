@@ -1,20 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BFE857D0-3720-46FE-B8B0-5D365707149F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FD4B4EB7-9125-4430-A3A2-168A0DAEE5EE}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MFPL", "src\MFPL\MFPL.xproj", "{7D0D8FA2-AB39-4874-9BD5-072B9BE4682B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{6EE91BC2-42DB-4611-8918-826574722BFB}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MFPL.Test", "MFPL.Test\MFPL.Test.xproj", "{1D41BA35-2E22-4900-8FDF-0AFC5B7A3C6C}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MFPL", "src\MFPL\MFPL.xproj", "{7D0D8FA2-AB39-4874-9BD5-072B9BE4682B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MFPL.Test", "MFPL.Test\MFPL.Test.csproj", "{1D41BA35-2E22-4900-8FDF-0AFC5B7A3C6C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
