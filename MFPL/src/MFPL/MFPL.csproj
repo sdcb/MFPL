@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Antlr4.Runtime" Version="4.5.4-beta001" />
+    <PackageReference Include="Antlr4.Runtime" Version="4.6.1-beta002" />
     <PackageReference Include="Sigil" Version="4.7.0" />
   </ItemGroup>
 
